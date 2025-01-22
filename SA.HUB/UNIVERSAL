@@ -1,0 +1,458 @@
+-- SA.HUB Script
+-- Professional Edition v2.6
+
+-- Configuration
+local CONFIG = {
+    COLORS = {
+        BLACK = {
+            BACKGROUND = Color3.fromRGB(25, 25, 25),
+            PRIMARY = Color3.fromRGB(40, 40, 40),
+            SECONDARY = Color3.fromRGB(30, 30, 30),
+            TEXT = Color3.fromRGB(255, 255, 255),
+            ACCENT = Color3.fromRGB(70, 130, 255)
+        },
+        BABY_BLUE = {
+            BACKGROUND = Color3.fromRGB(220, 240, 255),
+            PRIMARY = Color3.fromRGB(180, 220, 255),
+            SECONDARY = Color3.fromRGB(200, 230, 255),
+            TEXT = Color3.fromRGB(0, 0, 0),
+            ACCENT = Color3.fromRGB(70, 130, 255)
+        },
+        BABY_PINK = {
+             BACKGROUND = Color3.fromRGB(255, 220, 240),
+            PRIMARY = Color3.fromRGB(255, 180, 220),
+            SECONDARY = Color3.fromRGB(255, 200, 230),
+             TEXT = Color3.fromRGB(0, 0, 0),
+            ACCENT = Color3.fromRGB(70, 130, 255)
+        }
+    },
+    GUI = {
+        COMMANDS_SIZE = Vector2.new(300, 400),
+        TITLE_HEIGHT = 40,
+        BUTTON_HEIGHT = 35
+    },
+    KEYBIND = Enum.KeyCode.L
+}
+
+-- Services
+local Services = {
+    Players = game:GetService("Players"),
+    TweenService = game:GetService("TweenService"),
+    CoreGui = game:GetService("CoreGui"),
+    UserInputService = game:GetService("UserInputService"),
+    VoiceChatService = game:GetService("VoiceChatService"),
+	HttpService = game:GetService("HttpService"),
+	RunService = game:GetService("RunService")
+}
+
+-- Utility Functions
+local Utility = {}
+
+function Utility.CreateInstance(className, properties)
+    local instance = Instance.new(className)
+    for prop, value in pairs(properties) do
+        instance[prop] = value
+    end
+    return instance
+end
+
+function Utility.Tween(instance, properties, duration)
+    local tween = Services.TweenService:Create(
+        instance,
+        TweenInfo.new(duration, Enum.EasingStyle.Quad),
+        properties
+    )
+    tween:Play()
+    return tween
+end
+
+-- Main GUI Class
+local SAHUB = {
+    Player = Services.Players.LocalPlayer,
+    Screen = nil,
+    CommandsGui = nil,
+    CurrentTheme = CONFIG.COLORS.BLACK
+}
+
+function SAHUB:Init()
+    self.Screen = Utility.CreateInstance("ScreenGui", {
+        Name = "SA.HUB",
+        ResetOnSpawn = false,
+        Parent = Services.CoreGui
+    })
+    
+    self:CreateThemeSelection()
+end
+
+function SAHUB:CreateThemeSelection()
+	 local selection = Utility.CreateInstance("Frame", {
+        Name = "ThemeSelection",
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundColor3 = CONFIG.COLORS.BLACK.BACKGROUND,
+        Parent = self.Screen
+    })
+    
+	local label = Utility.CreateInstance("TextLabel", {
+        Name = "Label",
+        Size = UDim2.new(0, 300, 0, 30),
+        Position = UDim2.new(0.5, -150, 0.3, 0),
+        BackgroundTransparency = 1,
+        TextColor3 = CONFIG.COLORS.BLACK.TEXT,
+        TextSize = 20,
+        Font = Enum.Font.GothamBold,
+        Text = "Choose a theme",
+		TextTransparency = 1,
+        Parent = selection
+    })
+
+	local buttonSize = UDim2.new(0, 100, 0, 40)
+	local buttonSpacing = 110
+	
+	
+    local blackButton = Utility.CreateInstance("TextButton", {
+        Name = "BlackButton",
+        Size = buttonSize,
+		Position = UDim2.new(0.5, -buttonSpacing , 0.5, -20),
+        BackgroundColor3 = CONFIG.COLORS.BLACK.PRIMARY,
+        TextColor3 = CONFIG.COLORS.BLACK.TEXT,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        Text = "Black",
+        Parent = selection
+    })
+    
+	local blueButton = Utility.CreateInstance("TextButton", {
+        Name = "BlueButton",
+        Size = buttonSize,
+        Position = UDim2.new(0.5, 0, 0.5, -20),
+        BackgroundColor3 = CONFIG.COLORS.BABY_BLUE.PRIMARY,
+        TextColor3 = CONFIG.COLORS.BABY_BLUE.TEXT,
+        TextSize = 14,
+         Font = Enum.Font.GothamBold,
+        Text = "Baby Blue",
+        Parent = selection
+    })
+	
+	 local pinkButton = Utility.CreateInstance("TextButton", {
+        Name = "PinkButton",
+        Size = buttonSize,
+		Position = UDim2.new(0.5, buttonSpacing, 0.5, -20),
+        BackgroundColor3 = CONFIG.COLORS.BABY_PINK.PRIMARY,
+        TextColor3 = CONFIG.COLORS.BABY_PINK.TEXT,
+         TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        Text = "Baby Pink",
+        Parent = selection
+    })
+	
+	 -- Animate intro
+    Utility.Tween(label, {TextTransparency = 0}, 1)
+	
+	local function setupTheme(theme)
+		self.CurrentTheme = theme
+        selection:Destroy()
+        self:CreateIntro()
+		self:CreateCommandsGui()
+        self:SetupKeybind()
+	end
+    
+	blackButton.MouseButton1Click:Connect(function()
+		 setupTheme(CONFIG.COLORS.BLACK)
+	end)
+	blueButton.MouseButton1Click:Connect(function()
+		 setupTheme(CONFIG.COLORS.BABY_BLUE)
+	end)
+	pinkButton.MouseButton1Click:Connect(function()
+		 setupTheme(CONFIG.COLORS.BABY_PINK)
+	end)
+end
+
+function SAHUB:CreateIntro()
+    local intro = Utility.CreateInstance("Frame", {
+        Name = "Intro",
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundColor3 = self.CurrentTheme.BACKGROUND,
+        Parent = self.Screen
+    })
+    
+    local logo = Utility.CreateInstance("TextLabel", {
+        Name = "Logo",
+        Size = UDim2.new(0, 300, 0, 100),
+        Position = UDim2.new(0.5, -150, 0.5, -50),
+        BackgroundTransparency = 1,
+        TextColor3 = self.CurrentTheme.TEXT,
+        TextSize = 48,
+        Font = Enum.Font.GothamBold,
+        Text = "SA.HUB",
+        TextTransparency = 1,
+        Parent = intro
+    })
+    
+     local keybindLabel = Utility.CreateInstance("TextLabel", {
+        Name = "KeybindLabel",
+        Size = UDim2.new(0, 300, 0, 30),
+        Position = UDim2.new(0.5, -150, 0.5, 50),
+        BackgroundTransparency = 1,
+        TextColor3 = self.CurrentTheme.TEXT,
+        TextSize = 14,
+        Font = Enum.Font.Gotham,
+        Text = "(Press L to activate cmds)",
+         TextTransparency = 1,
+        Parent = intro
+    })
+    
+    -- Animate intro
+    Utility.Tween(logo, {TextTransparency = 0}, 1)
+    Utility.Tween(keybindLabel, {TextTransparency = 0}, 1)
+    task.wait(2)
+    Utility.Tween(intro, {BackgroundTransparency = 1}, 0.5).Completed:Wait()
+    intro:Destroy()
+end
+
+function SAHUB:CreateCommandsGui()
+   self.CommandsGui = Utility.CreateInstance("Frame", {
+        Name = "CommandsGui",
+        Size = UDim2.new(0, CONFIG.GUI.COMMANDS_SIZE.X, 0, CONFIG.GUI.COMMANDS_SIZE.Y),
+        Position = UDim2.new(0.5, -150, 0.5, -200),
+        BackgroundColor3 = self.CurrentTheme.SECONDARY,
+        BorderSizePixel = 0,
+		ClipsDescendants = true,
+        Visible = false,
+        Parent = self.Screen
+    })
+    
+    -- Add draggable title bar and close button
+    self:CreateTitleBar(self.CommandsGui, "SA.HUB Commands")
+    self:CreateCommandsList()
+end
+
+function SAHUB:CreateTitleBar(gui, titleText)
+    local titleBar = Utility.CreateInstance("Frame", {
+        Name = "TitleBar",
+        Size = UDim2.new(1, 0, 0, CONFIG.GUI.TITLE_HEIGHT),
+        BackgroundColor3 = self.CurrentTheme.PRIMARY,
+        Parent = gui
+    })
+    
+    Utility.CreateInstance("TextLabel", {
+        Size = UDim2.new(1, -40, 1, 0),
+        BackgroundTransparency = 1,
+        TextColor3 = self.CurrentTheme.TEXT,
+        TextSize = 20,
+        Font = Enum.Font.GothamBold,
+        Text = titleText,
+        Parent = titleBar
+    })
+    
+    local closeButton = Utility.CreateInstance("TextButton", {
+        Size = UDim2.new(0, 40, 1, 0),
+        Position = UDim2.new(1, -40, 0, 0),
+        BackgroundColor3 = Color3.fromRGB(255, 70, 70),
+        TextColor3 = self.CurrentTheme.TEXT,
+        TextSize = 20,
+        Font = Enum.Font.GothamBold,
+        Text = "X",
+        Parent = titleBar
+    })
+    
+    -- Make GUI draggable
+    local dragging, dragInput, dragStart, startPos
+    
+    titleBar.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = gui.Position
+        end
+    end)
+    
+    titleBar.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+    
+    Services.UserInputService.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - dragStart
+            gui.Position = UDim2.new(
+                startPos.X.Scale,
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale,
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+    
+    Services.UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    
+    closeButton.MouseButton1Click:Connect(function()
+        gui.Visible = false
+    end)
+end
+
+function SAHUB:CreateCommandsList()
+    local commandsList = Utility.CreateInstance("ScrollingFrame", {
+        Size = UDim2.new(1, -20, 1, -60),
+        Position = UDim2.new(0, 10, 0, 90),
+        BackgroundTransparency = 1,
+        ScrollBarThickness = 4,
+        Parent = self.CommandsGui
+    })
+    
+	 local layout = Utility.CreateInstance("UIListLayout", {
+        Padding = UDim.new(0, 5),
+        Parent = commandsList
+    })
+	
+    local searchBar =  Utility.CreateInstance("TextBox", {
+        Size = UDim2.new(1, -20, 0, 30),
+        Position = UDim2.new(0, 10, 0, 50),
+        BackgroundColor3 = self.CurrentTheme.PRIMARY,
+        TextColor3 = self.CurrentTheme.TEXT,
+		ClearTextOnFocus = false,
+        Font = Enum.Font.Gotham,
+        TextSize = 14,
+        Parent = self.CommandsGui,
+		Text = "Search commands",
+		TextTransparency = 0.5
+    })
+	
+	searchBar.Focused:Connect(function()
+		if searchBar.Text == "Search commands" then
+			searchBar.Text = ""
+			searchBar.TextTransparency = 0
+		end
+	end)
+
+	searchBar.FocusLost:Connect(function()
+		if searchBar.Text == "" then
+			searchBar.Text = "Search commands"
+			searchBar.TextTransparency = 0.5
+            for _, button in ipairs(commandsList:GetChildren()) do
+                if button:IsA("TextButton") then
+                    button.Visible = true
+                end
+            end
+		end
+	end)
+	
+	searchBar.Changed:Connect(function()
+		for _, button in ipairs(commandsList:GetChildren()) do
+			if button:IsA("TextButton") then
+				if searchBar.Text == "Search commands" or searchBar.Text == "" then
+					button.Visible = true
+				elseif string.find(string.lower(button.Text), string.lower(searchBar.Text)) then
+					button.Visible = true
+				else
+					button.Visible = false
+				end
+			end
+		end
+    end)
+    
+     -- Command buttons
+    for cmd, func in pairs(self.Commands) do
+        local button = Utility.CreateInstance("TextButton", {
+            Size = UDim2.new(1, 0, 0, CONFIG.GUI.BUTTON_HEIGHT),
+            BackgroundColor3 = self.CurrentTheme.PRIMARY,
+            TextColor3 = self.CurrentTheme.TEXT,
+            TextSize = 16,
+            Font = Enum.Font.Gotham,
+            Text = cmd,
+            Parent = commandsList
+        })
+        
+        button.MouseButton1Click:Connect(function()
+            self:ExecuteCommand(cmd)
+        end)
+    end
+end
+
+
+function SAHUB:ExecuteCommand(command)
+    if command == "!infinite yield" then
+		loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+	elseif command == "!SystemBroken" then
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script'))()
+    elseif command == "!emotes" then
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Gi7331/scripts/main/Emote.lua"))()
+    elseif command == "!VoiceChat" then
+		Services.VoiceChatService:joinVoice()
+     elseif command == "!ssj" then
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/0Ben1/fe/main/obf_11l7Y131YqJjZ31QmV5L8pI23V02b3191sEg26E75472Wl78Vi8870jRv5txZyL1.lua.txt"))()
+    elseif command == "!Float" then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Samet123Apfl/walkonair/refs/heads/main/walkonair"))()
+    elseif command == "!Antiall" then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Samet123Apfl/antiall2/refs/heads/main/antiall2"))()
+    elseif command == "!FaceFuck" then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Samet123Apfl/facefuckk/refs/heads/main/facefuck"))()
+    elseif command == "!AK ADMIN" then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/LOLkeeptrying/AKADMIN/refs/heads/main/Congratslol"))()
+    elseif command == "!Jerk" then
+        loadstring(game:HttpGet("https://pastefy.app/YZoglOyJ/raw"))() 
+	elseif command == "!Mute NON Friends" then
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Samet123Apfl/mutenonfrineds/refs/heads/main/Mutenonfriends"))()
+    elseif command == "!Sneak" then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Samet123Apfl/sneak/refs/heads/main/sneak"))()
+    elseif command == "!MicUPcombo" then
+    	    loadstring(game:HttpGet("https://raw.githubusercontent.com/Gi7331/scripts/main/Emote.lua"))()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/H20CalibreYT/SystemBroken/main/script'))()
+            loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+            game.Workspace.Baseplate.Size = Vector3.new(2048, 16, 2048)
+       
+        
+local Workspace = game:GetService("Workspace");
+local Players = game:GetService("Players");
+local Player = Players.LocalPlayer
+local Terrain = Workspace.Terrain
+
+Terrain:FillBlock(CFrame.new(66, -10, 72.5), Vector3.new(10000, 16, 10000), Enum.Material.Asphalt)
+    end
+end
+
+function SAHUB:SetupKeybind()
+    Services.UserInputService.InputBegan:Connect(function(input, processed)
+        if processed then return end
+        if input.KeyCode == CONFIG.KEYBIND then
+            self.CommandsGui.Visible = not self.CommandsGui.Visible
+        end
+    end)
+end
+
+-- Command Functions (Placeholder)
+SAHUB.Commands = {
+    ["!infinite yield"] = function()
+    end,
+    ["!SystemBroken"] = function()
+    end,
+    ["!emotes"] = function()
+    end,
+    ["!VoiceChat"] = function()
+    end,
+     ["!ssj"] = function()
+    end,
+    ["!Float"] = function()
+    end,
+    ["!Antiall"] = function()
+    end,
+     ["!FaceFuck"] = function()
+    end,
+   ["!AK ADMIN"] = function()
+   end,
+    ["!Jerk"] = function()
+    end,
+     ["!Mute NON Friends"] = function()
+   end,
+    ["!Sneak"] = function()
+   end,
+     ["!MicUPcombo"] = function()
+    end
+}
+
+-- Initialize
+SAHUB:Init()
