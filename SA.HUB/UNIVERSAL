@@ -4,11 +4,18 @@
 -- Configuration
 local CONFIG = {
     COLORS = {
-        BLACK = {
+       BLACK = {
             BACKGROUND = Color3.fromRGB(25, 25, 25),
             PRIMARY = Color3.fromRGB(40, 40, 40),
             SECONDARY = Color3.fromRGB(30, 30, 30),
             TEXT = Color3.fromRGB(255, 255, 255),
+            ACCENT = Color3.fromRGB(70, 130, 255)
+        },
+         WHITE = {
+            BACKGROUND = Color3.fromRGB(245, 245, 245),
+            PRIMARY = Color3.fromRGB(230, 230, 230),
+            SECONDARY = Color3.fromRGB(235, 235, 235),
+            TEXT = Color3.fromRGB(0, 0, 0),
             ACCENT = Color3.fromRGB(70, 130, 255)
         },
         BABY_BLUE = {
@@ -19,10 +26,38 @@ local CONFIG = {
             ACCENT = Color3.fromRGB(70, 130, 255)
         },
         BABY_PINK = {
-             BACKGROUND = Color3.fromRGB(255, 220, 240),
+            BACKGROUND = Color3.fromRGB(255, 220, 240),
             PRIMARY = Color3.fromRGB(255, 180, 220),
             SECONDARY = Color3.fromRGB(255, 200, 230),
-             TEXT = Color3.fromRGB(0, 0, 0),
+            TEXT = Color3.fromRGB(0, 0, 0),
+            ACCENT = Color3.fromRGB(70, 130, 255)
+        },
+        LIGHT_GREEN = {
+            BACKGROUND = Color3.fromRGB(220, 255, 220),
+            PRIMARY = Color3.fromRGB(180, 255, 180),
+            SECONDARY = Color3.fromRGB(200, 255, 200),
+            TEXT = Color3.fromRGB(0, 0, 0),
+            ACCENT = Color3.fromRGB(70, 130, 255)
+        },
+         LIGHT_YELLOW = {
+             BACKGROUND = Color3.fromRGB(255, 255, 200),
+             PRIMARY = Color3.fromRGB(255, 255, 150),
+             SECONDARY = Color3.fromRGB(255, 255, 180),
+            TEXT = Color3.fromRGB(0, 0, 0),
+            ACCENT = Color3.fromRGB(70, 130, 255)
+        },
+          LAVENDER = {
+             BACKGROUND = Color3.fromRGB(230, 230, 250),
+             PRIMARY = Color3.fromRGB(210, 210, 240),
+             SECONDARY = Color3.fromRGB(220, 220, 245),
+            TEXT = Color3.fromRGB(0, 0, 0),
+            ACCENT = Color3.fromRGB(70, 130, 255)
+        },
+           PEACH = {
+             BACKGROUND = Color3.fromRGB(255, 218, 185),
+             PRIMARY = Color3.fromRGB(255, 200, 150),
+             SECONDARY = Color3.fromRGB(255, 210, 170),
+            TEXT = Color3.fromRGB(0, 0, 0),
             ACCENT = Color3.fromRGB(70, 130, 255)
         }
     },
@@ -112,7 +147,7 @@ function SAHUB:CreateThemeSelection()
     local blackButton = Utility.CreateInstance("TextButton", {
         Name = "BlackButton",
         Size = buttonSize,
-		Position = UDim2.new(0.5, -buttonSpacing , 0.5, -20),
+		Position = UDim2.new(0.5, -buttonSpacing * 4, 0.5, -20),
         BackgroundColor3 = CONFIG.COLORS.BLACK.PRIMARY,
         TextColor3 = CONFIG.COLORS.BLACK.TEXT,
         TextSize = 14,
@@ -121,10 +156,22 @@ function SAHUB:CreateThemeSelection()
         Parent = selection
     })
     
+	local whiteButton = Utility.CreateInstance("TextButton", {
+        Name = "WhiteButton",
+        Size = buttonSize,
+		Position = UDim2.new(0.5, -buttonSpacing * 3 , 0.5, -20),
+        BackgroundColor3 = CONFIG.COLORS.WHITE.PRIMARY,
+        TextColor3 = CONFIG.COLORS.WHITE.TEXT,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        Text = "White",
+        Parent = selection
+    })
+    
 	local blueButton = Utility.CreateInstance("TextButton", {
         Name = "BlueButton",
         Size = buttonSize,
-        Position = UDim2.new(0.5, 0, 0.5, -20),
+        Position = UDim2.new(0.5, -buttonSpacing * 2, 0.5, -20),
         BackgroundColor3 = CONFIG.COLORS.BABY_BLUE.PRIMARY,
         TextColor3 = CONFIG.COLORS.BABY_BLUE.TEXT,
         TextSize = 14,
@@ -136,12 +183,60 @@ function SAHUB:CreateThemeSelection()
 	 local pinkButton = Utility.CreateInstance("TextButton", {
         Name = "PinkButton",
         Size = buttonSize,
-		Position = UDim2.new(0.5, buttonSpacing, 0.5, -20),
+		Position = UDim2.new(0.5, -buttonSpacing, 0.5, -20),
         BackgroundColor3 = CONFIG.COLORS.BABY_PINK.PRIMARY,
         TextColor3 = CONFIG.COLORS.BABY_PINK.TEXT,
          TextSize = 14,
         Font = Enum.Font.GothamBold,
         Text = "Baby Pink",
+        Parent = selection
+    })
+	
+    local lightGreenButton = Utility.CreateInstance("TextButton", {
+        Name = "LightGreenButton",
+        Size = buttonSize,
+        Position = UDim2.new(0.5, 0, 0.5, -20),
+        BackgroundColor3 = CONFIG.COLORS.LIGHT_GREEN.PRIMARY,
+        TextColor3 = CONFIG.COLORS.LIGHT_GREEN.TEXT,
+        TextSize = 14,
+         Font = Enum.Font.GothamBold,
+        Text = "Light Green",
+        Parent = selection
+    })
+
+    local lightYellowButton = Utility.CreateInstance("TextButton", {
+        Name = "LightYellowButton",
+        Size = buttonSize,
+        Position = UDim2.new(0.5, buttonSpacing, 0.5, -20),
+        BackgroundColor3 = CONFIG.COLORS.LIGHT_YELLOW.PRIMARY,
+        TextColor3 = CONFIG.COLORS.LIGHT_YELLOW.TEXT,
+        TextSize = 14,
+         Font = Enum.Font.GothamBold,
+        Text = "Light Yellow",
+        Parent = selection
+    })
+    
+    local lavenderButton = Utility.CreateInstance("TextButton", {
+        Name = "LavenderButton",
+        Size = buttonSize,
+        Position = UDim2.new(0.5, buttonSpacing * 2, 0.5, -20),
+        BackgroundColor3 = CONFIG.COLORS.LAVENDER.PRIMARY,
+        TextColor3 = CONFIG.COLORS.LAVENDER.TEXT,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        Text = "Lavender",
+        Parent = selection
+    })
+
+    local peachButton = Utility.CreateInstance("TextButton", {
+        Name = "PeachButton",
+        Size = buttonSize,
+        Position = UDim2.new(0.5, buttonSpacing * 3, 0.5, -20),
+        BackgroundColor3 = CONFIG.COLORS.PEACH.PRIMARY,
+        TextColor3 = CONFIG.COLORS.PEACH.TEXT,
+        TextSize = 14,
+        Font = Enum.Font.GothamBold,
+        Text = "Peach",
         Parent = selection
     })
 	
@@ -156,8 +251,11 @@ function SAHUB:CreateThemeSelection()
         self:SetupKeybind()
 	end
     
-	blackButton.MouseButton1Click:Connect(function()
+     blackButton.MouseButton1Click:Connect(function()
 		 setupTheme(CONFIG.COLORS.BLACK)
+	end)
+    whiteButton.MouseButton1Click:Connect(function()
+		 setupTheme(CONFIG.COLORS.WHITE)
 	end)
 	blueButton.MouseButton1Click:Connect(function()
 		 setupTheme(CONFIG.COLORS.BABY_BLUE)
@@ -165,13 +263,25 @@ function SAHUB:CreateThemeSelection()
 	pinkButton.MouseButton1Click:Connect(function()
 		 setupTheme(CONFIG.COLORS.BABY_PINK)
 	end)
+    lightGreenButton.MouseButton1Click:Connect(function()
+        setupTheme(CONFIG.COLORS.LIGHT_GREEN)
+    end)
+    lightYellowButton.MouseButton1Click:Connect(function()
+        setupTheme(CONFIG.COLORS.LIGHT_YELLOW)
+    end)
+    lavenderButton.MouseButton1Click:Connect(function()
+        setupTheme(CONFIG.COLORS.LAVENDER)
+    end)
+        peachButton.MouseButton1Click:Connect(function()
+        setupTheme(CONFIG.COLORS.PEACH)
+    end)
 end
 
 function SAHUB:CreateIntro()
     local intro = Utility.CreateInstance("Frame", {
         Name = "Intro",
         Size = UDim2.new(1, 0, 1, 0),
-        BackgroundColor3 = self.CurrentTheme.BACKGROUND,
+        BackgroundColor3 = CONFIG.COLORS.BLACK.BACKGROUND,
         Parent = self.Screen
     })
     
@@ -180,7 +290,7 @@ function SAHUB:CreateIntro()
         Size = UDim2.new(0, 300, 0, 100),
         Position = UDim2.new(0.5, -150, 0.5, -50),
         BackgroundTransparency = 1,
-        TextColor3 = self.CurrentTheme.TEXT,
+        TextColor3 = CONFIG.COLORS.BLACK.TEXT,
         TextSize = 48,
         Font = Enum.Font.GothamBold,
         Text = "SA.HUB",
@@ -193,7 +303,7 @@ function SAHUB:CreateIntro()
         Size = UDim2.new(0, 300, 0, 30),
         Position = UDim2.new(0.5, -150, 0.5, 50),
         BackgroundTransparency = 1,
-        TextColor3 = self.CurrentTheme.TEXT,
+        TextColor3 = CONFIG.COLORS.BLACK.TEXT,
         TextSize = 14,
         Font = Enum.Font.Gotham,
         Text = "(Press L to activate cmds)",
@@ -412,6 +522,8 @@ local Player = Players.LocalPlayer
 local Terrain = Workspace.Terrain
 
 Terrain:FillBlock(CFrame.new(66, -10, 72.5), Vector3.new(10000, 16, 10000), Enum.Material.Asphalt)
+   elseif command == "!DarkMap" then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Samet123Apfl/darkmap/refs/heads/main/dark%20map"))()
     end
 end
 
@@ -451,6 +563,8 @@ SAHUB.Commands = {
     ["!Sneak"] = function()
    end,
      ["!MicUPcombo"] = function()
+    end,
+     ["!DarkMap"] = function()
     end
 }
 
