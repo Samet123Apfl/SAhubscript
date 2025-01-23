@@ -524,7 +524,9 @@ local Terrain = Workspace.Terrain
 Terrain:FillBlock(CFrame.new(66, -10, 72.5), Vector3.new(10000, 16, 10000), Enum.Material.Asphalt)
    elseif command == "!DarkMap" then
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Samet123Apfl/darkmap/refs/heads/main/dark%20map"))()
-    end
+    elseif command == "!Hug" then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Samet123Apfl/hug/refs/heads/main/hzggg"))()
+   end
 end
 
 function SAHUB:SetupKeybind()
@@ -565,6 +567,8 @@ SAHUB.Commands = {
      ["!MicUPcombo"] = function()
     end,
      ["!DarkMap"] = function()
+    end,
+     ["!Hug"] = function()
     end
 }
 
